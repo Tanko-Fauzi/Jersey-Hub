@@ -1,0 +1,46 @@
+# Dependencies
+**/node_modules
+**/.pnp
+.pnp.js
+
+# Production builds
+**/dist
+**/build
+
+# Environment files (IMPORTANT - contains secrets!)
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+# Uploads
+**/uploads
+
+# Logs
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+
+# Editor
+**/.vscode
+**/.idea
+*.swp
+*.swo
+*~
+
+# OS
+**/.DS_Store
+**/Thumbs.db
+
+# Vite
+**/vite.config.js.timestamp-*
+**/vite.config.ts.timestamp-*
+
+# Backend specific
+jersey_express/uploads
+
+# Frontend specific  
+jersey_react/dist
+jersey_react/build
