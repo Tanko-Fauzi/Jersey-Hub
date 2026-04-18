@@ -22,41 +22,57 @@ const HomePage = () => {
     filterProducts();
   }, [products, activeFilter, searchTerm]);
 
-  const fetchProducts = async () => {
-    try {
-      const { data } = await axios.get('/api/products');
+const fetchProducts = async () => {
+  try {
+    const API_URL = import.meta.env.VITE_API_URL || '';
+    const { data } = await axios.get(`${API_URL}/api/products`);
+    
+    // Handle different response formats
+    if (data.products) {
+      // Format: { products: [...] }
       setProducts(data.products);
       setFilteredProducts(data.products);
-      // Initialize default sizes
-      const defaultSizes = {};
-      data.products.forEach(product => {
-        defaultSizes[product._id] = 'M';
-      });
-      setSelectedSizes(defaultSizes);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      toast.error('Failed to load products');
-    } finally {
-      setLoading(false);
+    } else if (Array.isArray(data)) {
+      // Format: [...]
+      setProducts(data);
+      setFilteredProducts(data);
+    } else {
+      console.error('Unexpected API response:', data);
+      setProducts([]);
+      setFilteredProducts([]);
     }
-  };
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    toast.error('Failed to load products');
+    setProducts([]);
+    setFilteredProducts([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
-  const filterProducts = () => {
-    let filtered = products;
 
-    if (activeFilter !== 'all') {
-      filtered = filtered.filter(p => p.type === activeFilter);
-    }
+const filterProducts = () => {
+  if (!products || products.length === 0) {
+    setFilteredProducts([]);
+    return;
+  }
+  
+  let filtered = [...products];
 
-    if (searchTerm) {
-      filtered = filtered.filter(p =>
-        p.team.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+  if (activeFilter !== 'all') {
+    filtered = filtered.filter(p => p.type === activeFilter);
+  }
 
-    setFilteredProducts(filtered);
-  };
+  if (searchTerm) {
+    filtered = filtered.filter(p =>
+      p.team?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
+
+  setFilteredProducts(filtered);
+};
 
   const handleAddToCart = (e, product) => {
     e.preventDefault();
@@ -65,6 +81,8 @@ const HomePage = () => {
     addToCart(product, 1, size);
     toast.success(`${product.team} ${product.name} (${size}) added to cart!`);
   };
+
+  
 
   if (loading) {
     return (

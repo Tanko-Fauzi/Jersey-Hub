@@ -12,7 +12,7 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'http://localhost:5173',
-    'https://your-app-name.netlify.app' // We'll update this after Netlify deploy
+    'https://jerseyhubproject.netlify.app' // We'll update this after Netlify deploy
   ],
   credentials: true
 }));

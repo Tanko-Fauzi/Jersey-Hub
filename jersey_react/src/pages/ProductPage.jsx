@@ -18,20 +18,21 @@ const ProductPage = () => {
     fetchProduct();
   }, [id]);
 
-  const fetchProduct = async () => {
-    try {
-      const { data } = await axios.get(`/api/products/${id}`);
-      setProduct(data);
-      if (data.sizes && data.sizes.length > 0) {
-        setSelectedSize(data.sizes[0]);
-      }
-    } catch (error) {
-      console.error('Error fetching product:', error);
-      toast.error('Failed to load product');
-    } finally {
-      setLoading(false);
+const fetchProduct = async () => {
+  try {
+    const API_URL = import.meta.env.VITE_API_URL || '';
+    const { data } = await axios.get(`${API_URL}/api/products/${id}`);
+    setProduct(data);
+    if (data?.sizes && data.sizes.length > 0) {
+      setSelectedSize(data.sizes[0]);
     }
-  };
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    toast.error('Failed to load product');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleAddToCart = () => {
     addToCart(product, quantity, selectedSize);
