@@ -1,0 +1,19 @@
+# render.yaml
+services:
+  - type: web
+    name: jersey-hub-api
+    env: node
+    rootDir: jersey_express
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: CLIENT_URL
+        sync: false

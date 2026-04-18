@@ -7,13 +7,15 @@ dotenv.config();
 const app = express();
 
 // Middleware
+// In server.js, update CORS configuration
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://your-app-name.netlify.app' // We'll update this after Netlify deploy
+  ],
   credentials: true
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 // Mock product data with real images and GHS prices
 const products = [
   { 
