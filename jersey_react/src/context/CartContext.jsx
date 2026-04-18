@@ -67,6 +67,8 @@ export const CartProvider = ({ children }) => {
         team: product.team,
         price: product.price,
         imageUrl: product.imageUrl,
+        badge: product.badge,
+        type: product.type,
         size,
         quantity
       }
