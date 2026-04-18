@@ -144,10 +144,80 @@ const riders = [
   { _id: '3', name: 'David Lee', vehicle: 'Bike', rating: 4.7, available: true }
 ];
 
-// Orders storage
-let orders = [];
+// ============== ORDER ROUTES (Replace existing ones) ==============
 
-// ============== ROUTES ==============
+// Orders storage (in memory - will reset when server restarts)
+let orders = [];
+let orderCounter = 1000;
+
+// Create order
+app.post('/api/orders', (req, res) => {
+  try {
+    const {
+      items,
+      shippingAddress,
+      deliveryMethod,
+      paymentMethod,
+      subtotal,
+      deliveryFee,
+      total
+    } = req.body;
+    
+    if (!items || items.length === 0) {
+      return res.status(400).json({ message: 'No order items' });
+    }
+    
+    // Generate unique order number
+    const orderNumber = 'JER-' + Date.now().toString().slice(-6) + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+    
+    const order = {
+      _id: (++orderCounter).toString(),
+      orderNumber: orderNumber,
+      items: items,
+      shippingAddress: shippingAddress,
+      deliveryMethod: deliveryMethod,
+      paymentMethod: paymentMethod,
+      subtotal: subtotal,
+      deliveryFee: deliveryFee,
+      total: total,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      trackingNumber: null
+    };
+    
+    orders.push(order);
+    
+    console.log('Order created:', orderNumber);
+    
+    res.status(201).json(order);
+  } catch (error) {
+    console.error('Order creation error:', error);
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// Get order by ID or order number
+app.get('/api/orders/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Search by _id or orderNumber
+    const order = orders.find(o => o._id === id || o.orderNumber === id);
+    
+    if (order) {
+      res.json(order);
+    } else {
+      res.status(404).json({ message: 'Order not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get all orders (for testing)
+app.get('/api/orders', (req, res) => {
+  res.json(orders);
+});
 
 // Health check
 app.get('/api/health', (req, res) => {
